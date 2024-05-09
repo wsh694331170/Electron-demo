@@ -2,7 +2,7 @@
   "name": "electron-demo",
   "private": true,
   "version": "0.0.0",
-  "main": "main.js",
+  "main": "electron/main.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -10,11 +10,9 @@
     "electron": "wait-on tcp:5173 && electron .", 
     "electron:serve": "concurrently -k \"npm run dev\" \"npm run electron\""
   },
-  "dependencies": {
-    "electron": "^30.0.2",
-    "vue": "^3.4.21"
-  },
   "devDependencies": {
+    "electron": "^30.0.2",
+    "vue": "^3.4.21",
     "@vitejs/plugin-vue": "^5.0.4",
     "concurrently": "^8.2.2",
     "vite": "^5.2.0",

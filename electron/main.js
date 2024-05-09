@@ -2,6 +2,9 @@
 const { app, BrowserWindow } = require('electron')
 const path = require('path')
 
+const NODE_ENV = process.env.NODE_ENV  //新增
+// const NODE_ENV = 'development'  // 判断开发或生产模式(建议写成这种,开发模式就可以用,等即将打包了再把这个变量换成打包模式)
+
 function createWindow () {
   // 创建浏览器窗口
   const mainWindow = new BrowserWindow({
@@ -13,10 +16,16 @@ function createWindow () {
   })
 
   // 加载 index.html
-  mainWindow.loadURL("http://localhost:5173") 
-
+  // mainWindow.loadFile('dist/index.html') // 此处跟electron官网路径不同，需要注意
+  mainWindow.loadURL(
+    NODE_ENV === 'development'
+    ? 'http://localhost:5173'
+    :`file://${path.join(__dirname, '../dist/index.html')}`
+  ); // 新增
   // 打开开发工具
-  // mainWindow.webContents.openDevTools()
+  if (NODE_ENV === "development") {
+    mainWindow.webContents.openDevTools()
+  } // 新增
 }
 
 // 这段程序将会在 Electron 结束初始化
