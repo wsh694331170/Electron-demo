@@ -15,8 +15,8 @@ module.exports = {
           owner: 'rexwzh',
           name: 'electron-demo'
         },
-        prerelease: false,
-        draft: true
+        prerelease: true,
+        draft: false
       }
     }
   ],

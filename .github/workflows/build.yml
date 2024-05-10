@@ -1,15 +1,13 @@
-name: Prerelease
+name: Build
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
 jobs:
-  prerelease-macos:
+  build-macos:
     runs-on: macos-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
     strategy:
       matrix:
         arch: [x64, arm64]
@@ -17,6 +15,7 @@ jobs:
         # include:
         #   - arch: arm64
         #     target: dmg
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -37,21 +36,25 @@ jobs:
     - name: Build application
       run: npm run build
 
-    - name: Use GitHub Token in a script
-      run: |
-        curl -H "Authorization: token ${{ secrets.GH_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/actions/secrets
-      
     - name: Package application for macOS ${{ matrix.arch }} ${{ matrix.target }}
-      run: npx electron-forge publish --platform=darwin --arch=${{ matrix.arch }} --targets="@electron-forge/maker-${{ matrix.target }}" --icon=public/avatar
-  
-  prerelease-linux:
+      run: npx electron-forge make --platform=darwin --arch=${{ matrix.arch }} --targets="@electron-forge/maker-${{ matrix.target }}" --icon=public/avatar
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: electron-app-${{ matrix.arch }}-${{ matrix.target }}
+        path: out/make/**/*.${{ matrix.target == 'dmg' && 'dmg' || 'zip' }}
+
+  build-linux:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
     strategy:
       matrix:
         arch: [x64, arm64]
         target: [deb, zip]
+        # include:
+        #   - arch: x64
+        #     target: deb
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -60,24 +63,24 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '20'
-
+    
     - name: Install dependencies
       run: npm install
 
     - name: Build application
       run: npm run build
 
-    - name: Use GitHub Token in a script
-      run: |
-        curl -H "Authorization: token ${{ secrets.GH_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/actions/secrets
-      
     - name: Package application for Linux ${{ matrix.arch }} ${{ matrix.target }}
-      run: npx electron-forge publish --platform=linux --arch=${{ matrix.arch }} --targets="@electron-forge/maker-${{ matrix.target }}" --icon=public/avatar
+      run: npx electron-forge make --platform=linux --arch=${{ matrix.arch }} --targets="@electron-forge/maker-${{ matrix.target }}" --icon=public/avatar
 
-  prerelease-windows:
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: electron-app-${{ matrix.arch }}-${{ matrix.target }}
+        path: out/make/**/*.${{ matrix.target == 'deb' && 'deb' || 'zip' }}
+    
+  build-windows:
     runs-on: windows-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
     strategy:
       matrix:
         arch: [x64, ia32]
@@ -99,4 +102,10 @@ jobs:
       run: npm run build
 
     - name: Package application for Windows ${{ matrix.arch }} ${{ matrix.target }}
-      run: npx electron-forge publish --platform=win32 --arch=${{ matrix.arch }} --targets="@electron-forge/maker-${{ matrix.target }}" --icon=public/avatar
+      run: npx electron-forge make --platform=win32 --arch=${{ matrix.arch }} --targets="@electron-forge/maker-${{ matrix.target }}" --icon=public/avatar
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: electron-app-${{ matrix.arch }}-${{ matrix.target }}
+        path: out/make/**/*.${{ matrix.target == 'squirrel' && 'exe' || 'zip' }}
