@@ -2,9 +2,13 @@
   "name": "electron-demo",
   "private": true,
   "main": "electron/main.js",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "Rex Wang",
   "description": "An electron demo with vite and vue3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/npm/cli.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -17,6 +21,7 @@
     "publish": "electron-forge publish"
   },
   "dependencies": {
+    "update-electron-app": "^3.0.0",
     "vue": "^3.4.21"
   },
   "devDependencies": {
