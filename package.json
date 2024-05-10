@@ -3,6 +3,8 @@
   "private": true,
   "main": "electron/main.js",
   "version": "0.0.0",
+  "author": "Rex Wang",
+  "description": "An electron demo with vite and vue3",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
