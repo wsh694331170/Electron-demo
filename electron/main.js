@@ -20,7 +20,7 @@ function createWindow () {
   mainWindow.loadURL(
     NODE_ENV === 'development'
     ? 'http://localhost:5173'
-    :`file://${path.join(__dirname, '../dist/index.html')}`
+    :`file://${path.join(__dirname, 'pages/index.html')}`
   ); // 新增
   // 打开开发工具
   if (NODE_ENV === "development") {
