@@ -1,9 +1,6 @@
 name: macOS Build
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
@@ -15,6 +12,9 @@ jobs:
       matrix:
         arch: [x64, arm64]
         target: [dmg, zip]
+        # include:
+        #   - arch: arm64
+        #     target: dmg
 
     steps:
     - name: Checkout code
@@ -23,7 +23,12 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '20'
+    
+    - name: Install Python 3.11.4
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11.4'
 
     - name: Install dependencies
       run: npm install
@@ -32,10 +37,14 @@ jobs:
       run: npm run build
 
     - name: Package application for macOS ${{ matrix.arch }} ${{ matrix.target }}
-      run: npx electron-forge make --platform=darwin --arch=${{ matrix.arch }} --targets="@electron-forge/maker-${{ matrix.target }}" --icon=public/rex
+      run: npx electron-forge make --platform=darwin --arch=${{ matrix.arch }} --targets="@electron-forge/maker-${{ matrix.target }}" --icon=public/avatar
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:
         name: electron-app-${{ matrix.arch }}-${{ matrix.target }}
-        path: out/make/**/*${{ matrix.target == 'dmg' ? '.dmg' : '.zip' }}
+        path: out/make/**/*.${{ matrix.target == 'dmg' && 'dmg' || 'zip' }}
+
+    
+      
+

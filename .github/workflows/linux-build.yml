@@ -1,0 +1,41 @@
+name: Linux Build
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [x64, arm64]
+        target: [deb, zip]
+        # include:
+        #   - arch: x64
+        #     target: deb
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+    
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build application
+      run: npm run build
+
+    - name: Package application for Linux ${{ matrix.arch }} ${{ matrix.target }}
+      run: npx electron-forge make --platform=linux --arch=${{ matrix.arch }} --targets="@electron-forge/maker-${{ matrix.target }}" --icon=public/avatar
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: electron-app-${{ matrix.arch }}-${{ matrix.target }}
+        path: out/make/**/*.${{ matrix.target == 'deb' && 'deb' || 'zip' }}

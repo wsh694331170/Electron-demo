@@ -7,27 +7,18 @@ module.exports = {
     icon: 'public/avatar' // no file extension required
   },
   rebuildConfig: {},
-  makers: [
+  publishers: [
     {
-      name: '@electron-forge/maker-squirrel',
-      config: {},
-    },
-    {
-      name: '@electron-forge/maker-zip',
-      platforms: ['darwin'],
-    },
-    {
-      name: '@electron-forge/maker-deb',
+      name: '@electron-forge/publisher-github',
       config: {
-        options: {
-          icon: 'public/avatar'
-        }
-      },
-    },
-    {
-      name: '@electron-forge/maker-rpm',
-      config: {},
-    },
+        repository: {
+          owner: 'rexwzh',
+          name: 'electron-demo'
+        },
+        prerelease: false,
+        draft: true
+      }
+    }
   ],
   plugins: [
     {
