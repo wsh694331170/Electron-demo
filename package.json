@@ -2,9 +2,13 @@
   "name": "electron-demo",
   "private": true,
   "main": "electron/main.js",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "author": "Rex Wang",
   "description": "An electron demo with vite and vue3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/npm/cli.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -13,9 +17,11 @@
     "electron:serve": "concurrently -k \"npm run dev\" \"npm run electron\"",
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "publish": "electron-forge publish"
   },
   "dependencies": {
+    "update-electron-app": "^3.0.0",
     "vue": "^3.4.21"
   },
   "devDependencies": {
@@ -27,6 +33,7 @@
     "@electron-forge/maker-zip": "^7.4.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
     "@electron-forge/plugin-fuses": "^7.4.0",
+    "@electron-forge/publisher-github": "^7.4.0",
     "@electron/fuses": "^1.8.0",
     "@vitejs/plugin-vue": "^5.0.4",
     "concurrently": "^8.2.2",
