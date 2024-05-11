@@ -7,7 +7,7 @@
   "description": "An electron demo with vite and vue3",
   "repository": {
     "type": "git",
-    "url": "https://github.com/npm/cli.git"
+    "url": "https://github.com/rexwzh/electron-demo.git"
   },
   "scripts": {
     "dev": "vite",
