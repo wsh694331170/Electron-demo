@@ -11,11 +11,6 @@ jobs:
     strategy:
       matrix:
         arch: [x64, arm64]
-        target: [dmg, zip]
-        # include:
-        #   - arch: arm64
-        #     target: dmg
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -36,25 +31,26 @@ jobs:
     - name: Build application
       run: npm run build
 
-    - name: Package application for macOS ${{ matrix.arch }} ${{ matrix.target }}
-      run: npx electron-forge make --platform=darwin --arch=${{ matrix.arch }} --targets="@electron-forge/maker-${{ matrix.target }}" --icon=public/avatar
+    - name: Package application for macOS ${{ matrix.arch }}
+      run: npx electron-forge make --platform=darwin --arch=${{ matrix.arch }} --targets="@electron-forge/maker-zip,@electron-forge/maker-dmg" --icon=public/avatar
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: electron-app-${{ matrix.arch }}-${{ matrix.target }}
-        path: out/make/**/*.${{ matrix.target == 'dmg' && 'dmg' || 'zip' }}
+        name: electron-app-${{ matrix.arch }}-zip
+        path: ${{ github.workspace }}/**/make/**/*.zip
+        
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: electron-app-${{ matrix.arch }}-dmg
+        path: ${{ github.workspace }}/**/make/**/*.dmg
 
   build-linux:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         arch: [x64, arm64]
-        target: [deb, zip]
-        # include:
-        #   - arch: x64
-        #     target: deb
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -70,21 +66,27 @@ jobs:
     - name: Build application
       run: npm run build
 
-    - name: Package application for Linux ${{ matrix.arch }} ${{ matrix.target }}
-      run: npx electron-forge make --platform=linux --arch=${{ matrix.arch }} --targets="@electron-forge/maker-${{ matrix.target }}" --icon=public/avatar
+    - name: Package application for Linux ${{ matrix.arch }}
+      run: npx electron-forge make --platform=linux --arch=${{ matrix.arch }} --targets="@electron-forge/maker-deb,@electron-forge/maker-zip" --icon=public/avatar
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: electron-app-${{ matrix.arch }}-${{ matrix.target }}
-        path: out/make/**/*.${{ matrix.target == 'deb' && 'deb' || 'zip' }}
+        name: electron-app-${{ matrix.arch }}-deb
+        path: ${{ github.workspace }}/**/make/**/*.deb
+      
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: electron-app-${{ matrix.arch }}-zip
+        path: ${{ github.workspace }}/**/make/**/*.zip
     
   build-windows:
     runs-on: windows-latest
     strategy:
       matrix:
         arch: [x64, ia32]
-        target: [squirrel, zip]
+        # target: [squirrel, zip]
 
     steps:
     - name: Checkout code
@@ -101,11 +103,17 @@ jobs:
     - name: Build application
       run: npm run build
 
-    - name: Package application for Windows ${{ matrix.arch }} ${{ matrix.target }}
-      run: npx electron-forge make --platform=win32 --arch=${{ matrix.arch }} --targets="@electron-forge/maker-${{ matrix.target }}" --icon=public/avatar
+    - name: Package application for Windows ${{ matrix.arch }}
+      run: npx electron-forge make --platform=win32 --arch=${{ matrix.arch }} --targets="@electron-forge/maker-squirrel,@electron-forge/maker-zip" --icon=public/avatar
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: electron-app-${{ matrix.arch }}-${{ matrix.target }}
-        path: out/make/**/*.${{ matrix.target == 'squirrel' && 'exe' || 'zip' }}
+        name: electron-app-${{ matrix.arch }}-exe
+        path: ${{ github.workspace }}/**/make/**/*.exe
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: electron-app-${{ matrix.arch }}-zip
+        path: ${{ github.workspace }}/**/make/**/*.zip
